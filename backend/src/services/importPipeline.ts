@@ -2,7 +2,7 @@ import pLimit from "p-limit";
 import type { AiProvider } from "../ai/types.js";
 import type { BatchRowInput } from "../ai/prompt.js";
 import type { ImportResult, SkippedRecord, CrmRecord } from "../types/crm.js";
-import { hasContactInfo, normalizeRecord } from "./normalize.js";
+import { extractFallbackContact, hasContactInfo, normalizeRecord, repairPhoneFromSource } from "./normalize.js";
 
 export interface RunImportOptions {
   headers: string[];
@@ -61,6 +61,11 @@ export async function runImport(options: RunImportOptions): Promise<ImportResult
             const original = originalByRowId.get(result.row_id) ?? {};
 
             if (result.status === "skipped" || !result.record) {
+              const fallbackContact = extractFallbackContact(original);
+              if (fallbackContact) {
+                imported.push(normalizeRecord(fallbackContact));
+                continue;
+              }
               skipped.push({
                 row_id: result.row_id,
                 reason: result.skip_reason || "Skipped by AI: insufficient data",
@@ -69,7 +74,7 @@ export async function runImport(options: RunImportOptions): Promise<ImportResult
               continue;
             }
 
-            const record = normalizeRecord(result.record);
+            const record = repairPhoneFromSource(normalizeRecord(result.record), original);
             if (!hasContactInfo(record)) {
               skipped.push({
                 row_id: result.row_id,

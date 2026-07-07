@@ -20,7 +20,7 @@ const FIELD_ALIASES: Record<CrmFieldName, RegExp[]> = {
   city: [/city|town/i],
   state: [/state|province|region/i],
   country: [/^country$/i],
-  lead_owner: [/owner|assigned|agent|rep\b|sales.?person|handled.?by|handler/i],
+  lead_owner: [/owner|assigned|agent|rep\b|sales|executive|handled.?by|handler/i],
   crm_status: [/status|stage|disposition/i],
   crm_note: [/note|remark|comment/i],
   data_source: [/source|campaign|utm.?source|project/i],

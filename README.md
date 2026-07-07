@@ -38,7 +38,7 @@ backend/src/
 │   ├── prompt.ts        System prompt: CRM schema, enums, mapping rules, worked example
 │   ├── schema.ts         zod validation for the AI's JSON response
 │   ├── factory.ts        Picks a provider from AI_PROVIDER env var
-│   └── providers/         openai.ts, gemini.ts, anthropic.ts, heuristic.ts
+│   └── providers/         openai.ts, gemini.ts, anthropic.ts, groq.ts, heuristic.ts
 ├── services/
 │   ├── csv.ts             CSV -> {headers, rows} parsing
 │   ├── importPipeline.ts  Batches rows, runs them through the AI provider with
@@ -50,7 +50,7 @@ backend/src/
 ```
 
 All four LLM providers implement the same `AiProvider` interface, so swapping
-`AI_PROVIDER=openai|gemini|anthropic|heuristic` is the only thing that changes. `heuristic`
+`AI_PROVIDER=openai|gemini|anthropic|groq|heuristic` is the only thing that changes. `heuristic`
 is a **no-API-key fallback** (fuzzy header aliasing + regex extraction) so the full
 pipeline is runnable and demoable without any AI credentials — it's intentionally less
 capable at ambiguous columns than a real LLM, which is the primary intended path.
@@ -93,7 +93,7 @@ row IDs so a hallucinated or dropped row can't reach the client unnoticed.
 ### Prerequisites
 
 - Node.js 18+
-- An API key for OpenAI, Gemini, or Anthropic (optional — the app runs without one using
+- An API key for OpenAI, Gemini, Anthropic, or Groq (optional — the app runs without one using
   the `heuristic` fallback provider)
 
 ### 1. Backend
@@ -133,10 +133,11 @@ AI_PROVIDER=openai OPENAI_API_KEY=sk-... docker compose up --build
 |---|---|
 | `PORT` | API port (default 8080) |
 | `CORS_ORIGIN` | Allowed frontend origin(s), comma-separated |
-| `AI_PROVIDER` | `openai` \| `gemini` \| `anthropic` \| `heuristic` |
+| `AI_PROVIDER` | `openai` \| `gemini` \| `anthropic` \| `groq` \| `heuristic` |
 | `OPENAI_API_KEY` / `OPENAI_MODEL` | Used when `AI_PROVIDER=openai` |
 | `GEMINI_API_KEY` / `GEMINI_MODEL` | Used when `AI_PROVIDER=gemini` |
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | Used when `AI_PROVIDER=anthropic` |
+| `GROQ_API_KEY` / `GROQ_MODEL` | Used when `AI_PROVIDER=groq` (OpenAI-compatible API) |
 | `AI_BATCH_SIZE` | Rows sent to the AI per batch (default 25) |
 | `AI_BATCH_CONCURRENCY` | Max concurrent batch calls (default 3) |
 | `AI_BATCH_RETRIES` | Retries per failed batch (default 2) |
