@@ -6,6 +6,10 @@ CRM lead schema, regardless of column names or layout.
 
 Built for the GrowEasy Software Developer (Intern / Full-Time) assignment.
 
+**Live app:** https://frontend-eight-delta-63.vercel.app
+**Live API:** https://groweasy-csv-importer-api.onrender.com (free tier — the first request after
+idle may take ~30s to wake up)
+
 ## How it works
 
 1. **Upload** a CSV (drag & drop or file picker).
